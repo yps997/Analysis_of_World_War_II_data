@@ -6,7 +6,7 @@ class Country(Base):
     __tablename__ = 'countries'
     country_id = Column(Integer, primary_key=True)
     country_name = Column(String(100), unique=True, nullable=False)
-    cities = relationship('City', backref='country', lazy=False)
+    cities = relationship('City', backref='country')
 
 class City(Base):
     __tablename__ = 'cities'
@@ -15,13 +15,13 @@ class City(Base):
     country_id = Column(Integer, ForeignKey('countries.country_id'), nullable=False)
     latitude = Column(Numeric)
     longitude = Column(Numeric)
-    targets = relationship('Target', backref='city', lazy=False)
+    targets = relationship('Target', backref='city')
 
 class TargetType(Base):
     __tablename__ = 'targettypes'
     target_type_id = Column(Integer, primary_key=True)
     target_type_name = Column(String(255), unique=True, nullable=False)
-    targets = relationship('Target', backref='target_type', lazy=False)
+    targets = relationship('Target', backref='target_type')
 
 class Target(Base):
     __tablename__ = 'targets'
@@ -43,4 +43,4 @@ class Mission(Base):
     aircraft_failed = Column(Numeric(10,2))
     aircraft_damaged = Column(Numeric(10,2))
     aircraft_lost = Column(Numeric(10,2))
-    targets = relationship('Target', backref='mission', lazy=False)
+    targets = relationship('Target', backref='mission', cascade="all, delete-orphan")
