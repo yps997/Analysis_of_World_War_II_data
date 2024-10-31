@@ -1,6 +1,8 @@
-flask==2.0.1
-flask-graphql==2.0.1
+Flask==2.0.1
 graphene==3.0
 graphene-sqlalchemy==2.3.0
-sqlalchemy==1.4.23
-psycopg2-binary==2.9.1
+SQLAlchemy==1.4.23
+psycopg2-binary==2.9.10
+Flask-GraphQL==2.0.1
+graphql-core==3.1.7
+graphql-relay==3.1.5
