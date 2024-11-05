@@ -1,10 +1,8 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphene import DateTime
 from sqlalchemy.sql import func
 from .models import Country, City, TargetType, Target, Mission
 from .database import Session
-from datetime import datetime
 from graphql import GraphQLError
 
 
@@ -54,8 +52,7 @@ class Query(graphene.ObjectType):
     )
     missions_by_country = graphene.List(MissionObject, country_name=graphene.String(required=True))
     missions_by_target_industry = graphene.List(MissionObject, industry=graphene.String(required=True))
-    aircraft_by_mission = graphene.Field(MissionObject, mission_id=graphene.Int(required=True))
-    attack_results_by_mission = graphene.Field(MissionObject, mission_id=graphene.Int(required=True))
+    attack_results_by_target_type = graphene.List(MissionObject, target_type=graphene.String(required=True))
 
     # Resolvers
     def resolve_all_missions(self, info):
@@ -82,17 +79,12 @@ class Query(graphene.ObjectType):
             Target.target_industry == industry
         ).all()
 
-    def resolve_aircraft_by_mission(self, info, mission_id):
-        mission = Session.query(Mission).filter(Mission.mission_id == mission_id).first()
-        if not mission:
-            raise GraphQLError(f"Mission with id {mission_id} not found")
-        return mission
 
-    def resolve_attack_results_by_mission(self, info, mission_id):
-        mission = Session.query(Mission).filter(Mission.mission_id == mission_id).first()
-        if not mission:
-            raise GraphQLError(f"Mission with id {mission_id} not found")
-        return mission
+    def resolve_attack_results_by_target_type(self, info, target_type):
+        mission_result_attack =Session.query(Mission).join(Target).join(TargetType).filter(TargetType.target_type_name == target_type).all()
+        if not mission_result_attack:
+            raise GraphQLError(f"Mission with target {target_type} not found")
+        return mission_result_attack
 
 
 # Mutation Classes
